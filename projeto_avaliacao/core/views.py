@@ -14,9 +14,12 @@ def cadastro(request):
     else:
         form = AlunoForm(request.POST)
         if form.is_valid():
-            form = AlunoForm()
-        context = {"form": form}
-        return render(request, 'cadastro.html', context)
+            AlunoModel.objects.create(**form.cleaned_data) 
+            context = {"form": form}
+            return render(request, 'alunos.html', context)
+        else:
+            context = {"form": form}
+            return render(request, 'cadastro.html', context)
 
 def index(request):
     return render(request, 'index.html')
