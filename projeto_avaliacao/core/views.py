@@ -1,26 +1,31 @@
 from django.shortcuts import render
-from .models import AlunoModel
+from .models import AlunoModel, Palestra
 from .forms import AlunoForm
-# Create your views here.
 
 def retorna_alunos(request):
-    return render(request, 'alunos.html')
+    alunos_all = AlunoModel.objects.all()
+    alunos = {"alunos": alunos_all}
+    return render(request, 'alunos.html', alunos)
 
 def cadastro(request):
-    if request.method == "GET":
-        form = AlunoForm()
-        context = {"form": form}
-        return render(request, 'cadastro.html', context)
-    else:
+    form = AlunoForm()
+    if request.method == "POST":
         form = AlunoForm(request.POST)
         if form.is_valid():
             AlunoModel.objects.create(**form.cleaned_data) 
+            form = AlunoForm()
             context = {"form": form}
-            return render(request, 'alunos.html', context)
+            return render(request, 'cadastro.html', context)
         else:
             context = {"form": form}
             return render(request, 'cadastro.html', context)
+    else:
+        form = AlunoForm()
+        context = {"form": form}
+        return render(request, 'cadastro.html', context)
 
 def index(request):
-    return render(request, 'index.html')
+    palestras_all = Palestra.objects.all()
+    palestras = {"palestras": palestras_all}
+    return render(request, 'index.html', palestras)
     
